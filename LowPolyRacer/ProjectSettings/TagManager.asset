@@ -8,6 +8,7 @@ TagManager:
   - Building
   - Decoration
   - Track
+  - Hood Camera
   layers:
   - Default
   - TransparentFX
@@ -17,10 +18,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - WheelCollider
+  - Props
+  - Car
+  - Checkpoint
   - 
   - 
   - 
