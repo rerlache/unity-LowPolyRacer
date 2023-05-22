@@ -22,5 +22,10 @@ public class InputController : MonoBehaviour
             SteerInput = Input.GetAxis(inputSteeringAxis);
             ThrottleInput = Input.GetAxis(inputThrottleAxis);
         }
+        else
+        {
+            SteerInput = 0f;
+            ThrottleInput = 0f;
+        }
     }
 }

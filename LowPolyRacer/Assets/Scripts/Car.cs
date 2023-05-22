@@ -9,6 +9,7 @@ public class Car : MonoBehaviour
     public Transform centerOfMass;
     public float motorTorque = 300f;
     public float maxSteer = 20f;
+    public bool isSelected;
 
     private Rigidbody _rigidbody;
     private Wheel[] wheels;
@@ -22,12 +23,15 @@ public class Car : MonoBehaviour
 
     void Update()
     {
-        Steer = GameManager.Instance.InputController.SteerInput;
-        Throttle = GameManager.Instance.InputController.ThrottleInput;
-        foreach (var wheel in wheels)
+        if (isSelected)
         {
-            wheel.SteerAngle = Steer * maxSteer;
-            wheel.Torque = Throttle * motorTorque;
+            Steer = GameManager.Instance.InputController.SteerInput;
+            Throttle = GameManager.Instance.InputController.ThrottleInput;
+            foreach (var wheel in wheels)
+            {
+                wheel.SteerAngle = Steer * maxSteer;
+                wheel.Torque = Throttle * motorTorque;
+            }
         }
     }
 

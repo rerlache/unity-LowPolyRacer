@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5267476262594982754}
   - component: {fileID: 8385877026597133504}
   - component: {fileID: 3737469099724292322}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BackLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 2508682168284484937}
   - component: {fileID: 4834692412997956537}
   - component: {fileID: 4970460249186276552}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FrontRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,8 @@ GameObject:
   - component: {fileID: 674964150172931228}
   - component: {fileID: 4216083119140132771}
   - component: {fileID: 6342398077441996635}
-  m_Layer: 0
+  - component: {fileID: 7740068428504919033}
+  m_Layer: 10
   m_Name: VanYellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -250,6 +251,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7740068428504919033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4384254381944025066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f05a47fd589cc8e41b9385a9f42d1ecd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  centerOfMass: {fileID: 0}
+  motorTorque: 300
+  maxSteer: 20
 --- !u!1 &5833576655863142797
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,7 +277,7 @@ GameObject:
   - component: {fileID: 6081477885503496788}
   - component: {fileID: 784152446155753758}
   - component: {fileID: 4304707048813782945}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BackRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,7 +360,7 @@ GameObject:
   - component: {fileID: 925441564861873511}
   - component: {fileID: 4142278228530035637}
   - component: {fileID: 1592520830157836512}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FrontLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -425,7 +441,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7932345541995446094}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Wheels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
