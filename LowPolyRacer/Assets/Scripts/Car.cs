@@ -6,14 +6,20 @@ public class Car : MonoBehaviour
 {
     public float Steer { get; set; }
     public float Throttle { get; set; }
+    public bool isSelected { get; set; }
+    public static Car Instance { get; private set; }
+
     public Transform centerOfMass;
     public float motorTorque = 300f;
     public float maxSteer = 20f;
-    public bool isSelected;
 
     private Rigidbody _rigidbody;
     private Wheel[] wheels;
 
+    void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         wheels = GetComponentsInChildren<Wheel>();

@@ -7,14 +7,15 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     #region Public Variables
-    public GameObject panelMainMenu;
-    public GameObject panelHelpMenu;
-    public GameObject panelPlay;
-    public GameObject panelCarGallery;
-    public GameObject panelHighscore;
-    public GameObject panelPause;
-    public GameObject[] tracks;
-    public GameObject[] cars;
+    [SerializeField] private GameObject panelMainMenu;
+    [SerializeField] private GameObject panelHelpMenu;
+    [SerializeField] private GameObject panelCarSelection;
+    [SerializeField] private GameObject panelPlay;
+    [SerializeField] private GameObject panelCarGallery;
+    [SerializeField] private GameObject panelHighscore;
+    [SerializeField] private GameObject panelPause;
+    [SerializeField] private GameObject[] tracks;
+    [SerializeField] private List<GameObject> cars;
     #endregion
 
     #region Public Properties 
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
     Button _highscoreButton;
     GameObject _playerCar;
     GameObject _currentTrack;
+    int _highlightedCarId = 0;
     Vector3 _track00DefaultCameraPos = new Vector3(11f, 6.3f, 18.1f);
     Vector3 _track00DefaultCameraRot = new Vector3(162f, -0.3f, 180f);
     Vector3 _track01DefaultCameraPos = new Vector3(19f, 6f, -30f);
@@ -56,6 +58,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+
     }
     void Update()
     {
@@ -87,12 +90,11 @@ public class GameManager : MonoBehaviour
                 panelHelpMenu.SetActive(true);
                 break;
             case State.INIT:
-                Destroy(_currentTrack);
-                SwitchState(State.PLAY);
+                panelCarSelection.SetActive(true);
+                HighlightCar(_highlightedCarId);
                 break;
             case State.PLAY:
                 SetupTrack(tracks[1]);
-                SetPlayerCar();
                 panelPlay.SetActive(true);
                 CameraFollow.Instance.Target = _playerCar.transform;
                 CameraFollow.Instance.SwitchCameraPosition(false);
@@ -100,8 +102,11 @@ public class GameManager : MonoBehaviour
             case State.PAUSE:
                 panelPause.SetActive(true);
                 break;
-            case State.LEVELCOMPLETED:
             case State.LOADLEVEL:
+                Destroy(_currentTrack);
+                SwitchState(State.PLAY);
+                break;
+            case State.LEVELCOMPLETED:
             case State.GAMEOVER:
             default:
                 break;
@@ -119,6 +124,7 @@ public class GameManager : MonoBehaviour
                 panelHelpMenu.SetActive(false);
                 break;
             case State.INIT:
+                panelCarSelection.SetActive(false);
                 break;
             case State.PLAY:
                 panelPlay.SetActive(false);
@@ -143,7 +149,11 @@ public class GameManager : MonoBehaviour
     }
     void SetPlayerCar()
     {
-        _playerCar = GameObject.FindGameObjectWithTag("Car");
+        var player = GameObject.FindGameObjectWithTag("Player");
+        _playerCar = Instantiate(cars[_highlightedCarId],player.transform);
+        Car.Instance.isSelected = true;
+        _playerCar.transform.parent = player.transform;
+        SwitchState(State.LOADLEVEL);
     }
     void SetupTrack(GameObject track)
     {
@@ -192,6 +202,55 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    void RemoveSelectedCarFromGarage(){
+        var spawns = _currentTrack.GetComponentsInChildren<Transform>();
+
+        spawns = spawns.Where(child => child.tag == "Respawn").ToArray();
+    }
+    void CarLoop(string direction)
+    {
+        int tempId = _highlightedCarId;
+        if (direction == "left")
+        {
+            _highlightedCarId = tempId + 1 == cars.Count ? 0 : _highlightedCarId + 1;
+        }
+        if (direction == "right")
+        {
+            _highlightedCarId = tempId - 1 < 0 ? cars.Count - 1 : _highlightedCarId - 1;
+        }
+        HighlightCar(_highlightedCarId);
+    }
+    void HighlightCar(int id)
+    {
+        var spawns = _currentTrack.GetComponentsInChildren<Transform>();
+        spawns = spawns.Where(child => child.tag == "Respawn").ToArray();
+        var car = spawns.Where(spawn => spawn.name == cars[id].name).First();
+        Vector3 newCamPosition = new();
+        Vector3 newCamRotation = new();
+        switch (car.name)
+        {
+            case "Humvee":
+                newCamPosition = new Vector3(-5.6f, 3.5f, 4.9f);
+                newCamRotation = new Vector3(154.7f, -49.3f, 177.7f);
+                break;
+            case "PickupBrown":
+                newCamPosition = new Vector3(.2f, 4.1f, 3.7f);
+                newCamRotation = new Vector3(145.5f, -47.6f, 180f);
+                break;
+            case "SportsCarRed":
+                newCamPosition = new Vector3(14.2f, 2.1f, 5.8f);
+                newCamRotation = new Vector3(154.6f, 25f, 183.5f);
+                break;
+            case "SportsCarGreen":
+                newCamPosition = new Vector3(14.7f, 1.9f, 5.2f);
+                newCamRotation = new Vector3(164.9f, -50.4f, 180.8f);
+                break;
+            default:
+                break;
+        }
+        Camera.main.transform.position = newCamPosition;
+        Camera.main.transform.rotation = Quaternion.Euler(newCamRotation);
+    }
     #endregion
 
     #region Custon Functions
@@ -221,10 +280,12 @@ public class GameManager : MonoBehaviour
     #region Button Functions
     public void BackButtonClicked() { SwitchState(State.MENU); }
     public void HelpButtonClicked() { SwitchState(State.HELP); }
-    public void StartButtonClicked() { SwitchState(State.INIT); } // TODO: change to INIT before!
+    public void StartButtonClicked() { SwitchState(State.INIT); }
+    public void ScrollButtonClicked(string direction) { CarLoop(direction); }
+    public void SelectCarButtonClicked() { SetPlayerCar(); }
     public void PauseButtonClicked() { SwitchState(State.PAUSE); }
     public void ContinueButtonClicked() { SwitchState(State.PLAY); }
-    public void EndGameButtonClicked() { SwitchState(State.MENU); } // TODO: Clear everything before going to the menu! 
+    public void EndGameButtonClicked() { Destroy(_currentTrack); Destroy(_playerCar); SwitchState(State.MENU); }
 
     #endregion
 }
